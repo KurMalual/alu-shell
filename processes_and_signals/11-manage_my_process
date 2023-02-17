@@ -1,46 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Init script to manage another process
 
-PIDFILE=/var/run/my_process.pid
-
+# Start my process
 start() {
-    if [ -f $PIDFILE ]; then
-        echo "manage_my_process is already running. PID: $(cat $PIDFILE)"
-    else
-        nohup ./manage_my_process >/dev/null 2>&1 &
-        echo $! > $PIDFILE
-        echo "manage_my_process started."
-    fi
+	./manage_my_process &
+	echo "$!" > /var/run/my_process.pid
 }
 
 stop() {
-    if [ -f $PIDFILE ]; then
-        kill $(cat $PIDFILE)
-        rm $PIDFILE
-        echo "manage_my_process stopped."
-    else
-        echo "manage_my_process is not running."
-    fi
+	pkill -f ./manage_my_process
+	rm /var/run/my_process.pid
 }
 
-restart() {
-    stop
-    start
-    echo "manage_my_process restarted."
-}
-
-case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    restart)
-        restart
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|restart}"
-        exit 1
+case "$1" in 
+	start)
+		start
+		echo "manage_my_process started"
+		;;
+	stop)
+		stop
+		echo "manage_my_process stopped"
+		;;
+	restart)
+		stop
+		start
+		echo "manage_my_process restarted"
+		;;
+	*)
+		echo "Usage: manage_my_process {start|stop|restart}"
+		;;
 esac
-
-exit 0
