@@ -6,6 +6,5 @@ find . -type f -iname "*.gif" | while read file; do
     # Output the name of the file sorted by byte values, but case-insensitive
     echo "$name"
 done | LC_ALL=C sort --ignore-case
-
 # Output a newline to end the listing
 echo
